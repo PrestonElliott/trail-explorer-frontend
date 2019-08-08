@@ -5,7 +5,7 @@ import { Row, Col, Card, Button } from 'react-bootstrap'
 class UsersCards extends Component {
 
     follow = (user) => {
-        let follow = { followed_user_id: user.id, user_id: this.props.user.user.id}
+        let follow = { followed_user_id: this.props.user.user.id, user_id: user.id }
         console.log(follow)
 
         fetch("https://trail-explorer-backend.herokuapp.com/follows", {
@@ -41,7 +41,7 @@ class UsersCards extends Component {
                                         </Card.Text>
                                             {
                                                 this.props.user.user.followed_users.find(f => f.id === user.id ) ?
-                                                <Button disabled> Followed </Button>
+                                                <Button disabled variant="danger"> Followed </Button>
                                                 :
                                                 <Button onClick={() => this.follow(user)} variant="primary">Follow!</Button> 
                                             }

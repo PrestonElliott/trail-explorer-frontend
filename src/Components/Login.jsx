@@ -13,7 +13,7 @@ class Login extends React.Component {
     handleLogin = (e) => {
         e.preventDefault()
         if(e.target.email.value && e.target.password.value) {
-            fetch('http://localhost:3000/login',{
+            fetch('https://trail-explorer-backend.herokuapp.com/login',{
                 method: 'POST',
                 headers: { Accept: 'application/json', 'Content-Type':'application/json' },
                 body: JSON.stringify({

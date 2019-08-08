@@ -13,7 +13,7 @@ class EditProfile extends Component {
         e.preventDefault()
         // console.log(e.target)
         if(e.target.email.value && e.target.currentPassword.value && e.target.password.value === e.target.confirmPassword.value) {
-            fetch(`http://localhost:3000/users/${this.props.user.id}`, {
+            fetch(`https://trail-explorer-backend.herokuapp.com/users/${this.props.user.id}`, {
                 method: "PATCH",
                 headers: {
                     Authorization: localStorage.token,

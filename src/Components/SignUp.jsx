@@ -9,7 +9,7 @@ class SignUp extends Component {
     handleSignUp = (e) => {
         e.preventDefault()
         if(e.target.name.value && e.target.email.value && e.target.password.value) {
-            fetch('http://localhost:3000/users',{
+            fetch('https://trail-explorer-backend.herokuapp.com/users',{
                 method: 'POST',
                 headers: { Accept: 'application/json', 'Content-Type':'application/json' },
                 body: JSON.stringify({

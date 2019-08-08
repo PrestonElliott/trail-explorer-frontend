@@ -8,7 +8,7 @@ class UsersCards extends Component {
         let follow = { followed_user_id: user.id, user_id: this.props.user.user.id}
         console.log(follow)
 
-        fetch("http://localhost:3000/follows", {
+        fetch("https://trail-explorer-backend.herokuapp.com/follows", {
             method: "POST",
             headers: { Accept: 'application/json', 
                     'Content-Type':'application/json',

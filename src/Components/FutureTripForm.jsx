@@ -15,7 +15,7 @@ class FutureTripForm extends Component {
         const maxResults = 25
         const decimalReplaceLat = lat.replace('.', '!')
         const decimalReplaceLon = lon.replace('.', '!')
-        fetch(`http://localhost:3000/trails&lat=${decimalReplaceLat}&lon=${decimalReplaceLon}&maxResults=${maxResults}`)
+        fetch(`https://trail-explorer-backend.herokuapp.com/trails&lat=${decimalReplaceLat}&lon=${decimalReplaceLon}&maxResults=${maxResults}`)
         .then(res => res.json())
         .then(res => this.props.dispatch({ type: "FETCH_TRAILS", data: res }))
     }
@@ -39,7 +39,7 @@ class FutureTripForm extends Component {
         e.preventDefault()
         let form = e.target
 
-        fetch('http://localhost:3000/future_trips',{
+        fetch('https://trail-explorer-backend.herokuapp.com/future_trips',{
             method: 'POST',
             headers: { Authorization: localStorage.token, 
                     Accept: 'application/json', 

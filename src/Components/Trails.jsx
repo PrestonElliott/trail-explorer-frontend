@@ -8,7 +8,7 @@ class Trails extends Component {
         const maxResults = 40
         const decimalReplaceLat = lat.replace('.', '!')
         const decimalReplaceLon = lon.replace('.', '!')
-        fetch(`http://localhost:3000/trails&lat=${decimalReplaceLat}&lon=${decimalReplaceLon}&maxResults=${maxResults}`)
+        fetch(`https://trail-explorer-backend.herokuapp.com/trails&lat=${decimalReplaceLat}&lon=${decimalReplaceLon}&maxResults=${maxResults}`)
         .then(res => res.json())
         .then(res => this.props.dispatch({ type: "FETCH_TRAILS", data: res }))
     }

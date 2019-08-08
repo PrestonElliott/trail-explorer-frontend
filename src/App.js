@@ -21,7 +21,7 @@ class App extends React.Component {
 
   componentDidMount() {
     if(localStorage.token) {
-      fetch('http://localhost:3000/profile',{
+      fetch('https://trail-explorer-backend.herokuapp.com/profile',{
         headers: { Authorization: localStorage.token }
       })
       .then(res => res.json())

@@ -38,6 +38,7 @@ class UsersCards extends Component {
                                         <Card.Text>
                                             {user.name}<br/> 
                                             {user.email} 
+                                            {user.profile_picture}
                                         </Card.Text>
                                             {
                                                 this.props.user.user.followed_users.find(f => f.id === user.id ) ?

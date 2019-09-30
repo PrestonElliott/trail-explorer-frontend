@@ -1,7 +1,6 @@
 import React, { Fragment } from "react";
 import { connect } from 'react-redux'
-// import { faSearch } from "@fortawesome/free-solid-svg-icons";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import {
   Navbar,
   NavbarToggler,
@@ -16,7 +15,6 @@ import {
   InputGroup,
   InputGroupAddon,
   InputGroupText,
-  // FormInput,
   Collapse
 } from "shards-react";
 
@@ -75,19 +73,7 @@ class NavExample extends React.Component {
 
               { this.props.loggedIn &&
                 <Fragment>
-                  <NavItem>
-                    <NavLink active href="/follower-feed">
-                      Follower Feed
-                    </NavLink>
-                  </NavItem>
 
-                  <NavItem>
-                    <NavLink active href="/all-users">
-                      All Users
-                    </NavLink>
-                  </NavItem>
-                  
-                
                   <Dropdown open={this.state.dropdownOpen} toggle={this.toggleDropdown}>
                     <DropdownToggle nav caret>
                       Profile
@@ -99,10 +85,23 @@ class NavExample extends React.Component {
                   </Dropdown>
 
                   <NavItem>
+                    <NavLink active href="/follower-feed">
+                      Follower Feed
+                    </NavLink>
+                  </NavItem>
+
+                  <NavItem>
+                    <NavLink active href="/all-users">
+                      All Users
+                    </NavLink>
+                  </NavItem>
+
+                  <NavItem>
                     <NavLink active onClick={()=> this.props.dispatch({ type: 'LOG_OUT' }) }>
                       Log Out
                     </NavLink>
                   </NavItem> 
+
                 </Fragment>
               }
 
@@ -119,10 +118,8 @@ class NavExample extends React.Component {
             <InputGroup size="sm" seamless>
               <InputGroupAddon type="prepend">
                 <InputGroupText>
-                  {/* <FontAwesomeIcon icon={faSearch} /> */}
                 </InputGroupText>
               </InputGroupAddon>
-              {/* <FormInput className="border-0" placeholder="Search..." /> */}
             </InputGroup>
           </Nav>
         </Collapse>

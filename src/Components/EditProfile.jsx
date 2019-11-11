@@ -1,20 +1,22 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Link, Redirect } from "react-router-dom"
-import { Form, FormInput, FormGroup } from "shards-react"
-import { Modal, Button } from "react-bootstrap"
-import EditProfileDiv from "./EditProfileDiv"
+import { Link, Redirect } from 'react-router-dom'
+import { Modal, Button, Form } from 'react-bootstrap'
+import { backend_api } from '../constants'
+import '../stylesheets/forms.scss'
 
 class EditProfile extends Component {
 
-    state = { redirect: null }
-
+    state = {
+        redirect: null
+    }
+    
     handleEditProfile = (e) => {
         e.preventDefault()
-        // console.log(e.target)
-        if(e.target.email.value && e.target.currentPassword.value && e.target.password.value === e.target.confirmPassword.value) {
-            fetch(`https://trail-explorer-backend.herokuapp.com/users/${this.props.user.id}`, {
-                method: "PATCH",
+        console.log(e.target.email.value)
+        if(e.target.new_password.value === e.target.confirm_password.value) {
+            fetch(`${backend_api}/users/${this.props.user.id}`, {
+                method: 'PATCH',
                 headers: {
                     Authorization: localStorage.token,
                     Accept: 'application/json', 
@@ -22,70 +24,62 @@ class EditProfile extends Component {
                 },
                 body: JSON.stringify({
                     user: {
-                        password: e.target.password.value
+                        password: e.target.new_password.value
                     }
                 })
             })
             .then(res => res.json())
             .then(res => {
-                // console.log(res)
                 if (res.user) {
-                    this.props.dispatch({ type: 'GET_USER', user: res.user })
+                    this.props.dispatch({ type: 'SET_USER', user: res.user })
                     this.setState({ redirect: <Redirect to='/profile' /> })
                 }
             })
         }
         else {
-            // this.props.error
-            
+            e.target.reset()
         }
     }
 
     render() {
         return (
-            <div>
-                { this.state.redirect }
-                <EditProfileDiv>
+            
+            <div id='edit-profile'>
+            {this.state.redirect}
                     <Modal.Dialog>
                         <Modal.Header>
                             <Modal.Title>Edit Profile</Modal.Title>
                         </Modal.Header>
 
                         <Modal.Body>
-                            <Form onSubmit={ this.handleEditProfile } >
+                            <Form id='edit-profile-form' onSubmit={ this.handleEditProfile } >
+                                <Form.Group>
+                                    <Form.Label>Current Password</Form.Label>
+                                    <Form.Control required name='current_password' type='current-password' placeholder='Current Password' />
+                                </Form.Group>
 
-                                <FormGroup>
-                                    <label htmlFor="#email">Email</label>
-                                    <FormInput type="email" name="email" id="#email" placeholder="Email" />
-                                </FormGroup>
+                                <Form.Group>
+                                    <Form.Label>New Password</Form.Label>
+                                    <Form.Control required name='new_password' type='new-password' placeholder='New Password' />
+                                </Form.Group>
+
+                                <Form.Group>
+                                    <Form.Label>Confirm Password</Form.Label>
+                                    <Form.Control required name='confirm_password' type='confirm-password' placeholder='Confirm Password' />
+                                </Form.Group>                 
                                 
-                                <FormGroup>
-                                    <label htmlFor="#current-password">Current Password</label>
-                                    <FormInput name="currentPassword" type="password" id="#current-password" placeholder="Current Password" />
-                                </FormGroup>
+                                <Button type='submit' variant='primary'>Save Changes</Button>
 
-                                <FormGroup>
-                                    <label htmlFor="#password">New Password</label>
-                                    <FormInput name="password" type="password" id="#password" placeholder="New Password" />
-                                </FormGroup>
-
-                                <FormGroup>
-                                    <label htmlFor="#confirm-password">Confirm Password</label>
-                                    <FormInput name="confirmPassword" type="password" id="#confirm-password" placeholder="Confirm Password" />
-                                </FormGroup>
-
-                                <Button type="submit" variant="primary">Save Changes</Button>
-                                <Link to="/trails"> 
-                                    <Button  variant="secondary">Cancel</Button>
+                                <Link to='/profile'> 
+                                    <Button  variant='secondary'>Cancel</Button>
                                 </Link> 
                             </Form>
                         </Modal.Body>
                     </Modal.Dialog>
-                </EditProfileDiv>
             </div>
         )
     }
 }
 
-let mapStateToProps = state => ({ user: state.userReducer.user })
+const mapStateToProps = state => ({ user: state.session.user })
 export default connect(mapStateToProps)(EditProfile)

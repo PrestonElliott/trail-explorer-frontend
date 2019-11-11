@@ -2,10 +2,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from "react-router-dom"
 import Iframe from 'react-iframe'
-import { Button } from "react-bootstrap"
-import FutureTripsContainer from "../Containers/FutureTripsContainer"
+import { ButtonGroup, Button } from "react-bootstrap"
+import FutureTripsContainer from "./FutureTripsContainer"
 import TripCarousel from "./TripCarousel"
-
 
 class Profile extends Component {
 
@@ -15,13 +14,19 @@ class Profile extends Component {
                 <div className="user-profile">
                 <br/><h2>Hey {this.props.user.name}!</h2><br/>
 
+                <ButtonGroup aria-label="Basic example">
                     <Link to="/trip-form"> 
-                        <Button  variant="primary">Log Your Trip!</Button><br/><br/>
-                    </Link>  
+                        <Button variant="primary">Log Your Trip</Button>
+                    </Link>
 
-                    <Link to="/future-trip-form"> 
-                        <Button variant="primary">Create a Future Trip!</Button>
-                    </Link> 
+                    <Link to="/future-trip-form">
+                        <Button variant="secondary">Create a Future Trip</Button>
+                    </Link>
+
+                    <Link to="/edit-profile">
+                        <Button variant="primary">Edit Profile</Button>
+                    </Link>
+                </ButtonGroup>
 
                 </div><br/><br/>
 
@@ -32,7 +37,7 @@ class Profile extends Component {
                     </Iframe>
                 </div><br/><br/>
 
-                <div>
+                <div id="trip-carousel">
                     <TripCarousel/>
                 </div><br/><br/>
 
@@ -45,5 +50,5 @@ class Profile extends Component {
     }
 }
 
-let mapStateToProps = state => ({ user: state.userReducer.user })
+let mapStateToProps = state => ({ user: state.session.user })
 export default connect(mapStateToProps)(Profile)

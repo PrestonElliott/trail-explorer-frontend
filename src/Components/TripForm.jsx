@@ -1,31 +1,34 @@
-import React, { Component, Fragment } from 'react'
+import React, { Fragment } from 'react'
 import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Form, FormInput, FormGroup, FormSelect } from "shards-react"
-import { Modal, Button } from "react-bootstrap"
+import ReactLoading from 'react-loading'
+import { Modal, Button, Form } from "react-bootstrap"
+import { postNewTrip } from '../actions/user'
+import StarRating from './StarRating'
 
-class TripForm extends Component {
+
+class TripForm extends React.Component {
 
     state = { 
         redirect: null,
-        trail_names: []
+        trail_names: [],
+        stars: 0
     }
 
-    fetchTrails = (lat, lon) => {
-        const maxResults = 25
-        const decimalReplaceLat = lat.replace('.', '!')
-        const decimalReplaceLon = lon.replace('.', '!')
-        fetch(`https://trail-explorer-backend.herokuapp.com/trails&lat=${decimalReplaceLat}&lon=${decimalReplaceLon}&maxResults=${maxResults}`)
-        .then(res => res.json())
-        .then(res => this.props.dispatch({ type: "FETCH_TRAILS", data: res }))
-    }
+    changeStars = newScore => this.setState({ stars: newScore })
 
-    componentDidMount() {
-        this.fetchTrails("33.7490", "-84.3880")
+    loading = () => {
+        if(!this.props.allTrails.length) {
+            return (
+                <div className="loading">
+                    <ReactLoading className='react-loading' type="cylon" color="#026F3D" height="10%" width="50%" />
+                </div>
+            )
+        }
     }
 
     handleCheckboxChange = (target, trail_name) => {
-        let newArr = this.state.trail_names
+        let newArr = this.state.trail_names.slice()
 
         if (target.checked)
             newArr.push(trail_name)
@@ -35,97 +38,85 @@ class TripForm extends Component {
         this.setState({ trail_names: newArr })
     }
 
-    handleCreateTrip = (e) => {
-        e.preventDefault()
-        let form = e.target
+    handleSubmit = event => {
+        event.preventDefault()
+        const form = event.target
+        const trip = {
+            title: form.title.value,
+            description: form.description.value,
+            location: form.location.value,
+            stars: this.state.stars,
+            image: form.image.value,
+            trail_names: this.state.trail_names
+        }
+        postNewTrip(trip, 'trips', this.props.dispatch)
+        .then(() => this.setState({ redirect: <Redirect to='/profile' /> }))
+    }
 
-        fetch('https://trail-explorer-backend.herokuapp.com/trips',{
-            method: 'POST',
-            headers: { Authorization: localStorage.token, 
-                    Accept: 'application/json', 
-                    'Content-Type':'application/json' },
-            body: JSON.stringify({
-                trip: {
-                    title: form.title.value,
-                    description: form.description.value,
-                    location: form.location.value,
-                    stars: form.stars.value,
-                    image: form.image.value,
-                    trail_names: this.state.trail_names
-                }
-            })
-        })
-        .then(res => res.json())
-        .then(res => {
-            if(res.trip) {
-                this.props.dispatch({ type: 'NEW_TRIP', trip: res.trip })
-                this.setState({ redirect: <Redirect to='/profile' /> })
-            }
-        })
+
+    mapTrailChoices = () => {
+        if(this.props.allTrails.length) {
+            return this.props.allTrails.map(trail =>
+                <Fragment key={trail.id}>
+                    <input type='checkbox' onChange={ e => this.handleCheckboxChange(e.target, trail.name)} /> {trail.name}
+                    <br/>
+                </Fragment>
+            )
+        }
     }
 
     render() {
-        if (!this.props.trail[0])
-            return null
         return (
-            <div>
+            <Modal.Dialog>
                 { this.state.redirect }
 
-                <Modal.Dialog>
-                    <Modal.Header>
-                        <Modal.Title>Create a New Trip!</Modal.Title>
-                    </Modal.Header>
+                <Modal.Header>
+                    <Modal.Title>Log a Previous Trip</Modal.Title>
+                </Modal.Header>
 
-                    <Modal.Body>
+                <Modal.Body>
 
-                        <Form onSubmit={(e) => this.handleCreateTrip(e)}>
+                    <Form onSubmit={this.handleSubmit}>
 
-                            <FormGroup>
-                                <FormInput required name="title" id="#title" placeholder="Title" />
-                            </FormGroup>
+                        <Form.Group>
+                            <Form.Control required name="title" id="#title" placeholder="Title" />
+                        </Form.Group>
 
-                            <FormGroup>
-                                <FormInput name="description" id="#description" placeholder="Description" />
-                            </FormGroup>
+                        <Form.Group>
+                            <Form.Control name="description" id="#description" placeholder="Description" />
+                        </Form.Group>
 
-                            <FormGroup>
-                                <FormInput name="location" id="#location" placeholder="Location" />
-                            </FormGroup>
+                        <Form.Group>
+                            <Form.Control name="location" id="#location" placeholder="Location" />
+                        </Form.Group>
 
-                            <FormGroup>
-                                <FormInput name="image" id="#image" placeholder="Image URL" />
-                            </FormGroup>
+                        <Form.Group>
+                            <Form.Control name="image" id="#image" placeholder="Image URL" />
+                        </Form.Group>
 
-                            <FormGroup className='trails-checklist'>
-                                { this.props.trail.map(trail => {
-                                    return <Fragment key={trail.id} >
-                                            <input type='checkbox' onChange={ e => this.handleCheckboxChange(e.target, trail.name)} /> {trail.name}
-                                            <br/>
-                                        </Fragment>
-                                    })
-                                }
-                            </FormGroup>
+                        <StarRating changeStars={this.changeStars}/>
 
-                            <FormSelect defaultValue='default' name="stars" id="#stars"  >
-                                <option disabled value='default'>Stars</option>
-                                <option value="5">5</option>
-                                <option value="4">4</option>
-                                <option value="3">3</option>
-                                <option value="2">2</option>
-                                <option value="1">1</option>
-                            </FormSelect>
+                        <Form.Group className='trails-checklist'>
+                            { this.loading() }
+                            { this.props.geoError && !this.state.loading && <div className='geoError'>{this.props.geoError}</div> }
+                            { this.mapTrailChoices() }
+                        </Form.Group>
 
-                            <FormGroup>
-                                <Button className="m-3" type="submit">Submit Trip</Button>
-                            </FormGroup>
-                        </Form>
+                        <Form.Group>
+                            <Button disabled={!this.props.allTrails.length} className="m-3" type="submit">Submit Trip</Button>
+                        </Form.Group>
+                    </Form>
 
-                    </Modal.Body>
-                </Modal.Dialog>
-            </div>
+                </Modal.Body>
+            </Modal.Dialog>
         )
     }
 }
 
-let mapStateToProps = state => ({ trail: state.trailReducer.trail })
+const mapStateToProps = state => ({
+    allTrails: state.location.allTrails,
+    lat: state.location.lat.replace('!',''),
+    lon: state.location.lon.replace('!',''),
+    geoError: state.location.geoError
+})
 export default connect(mapStateToProps)(TripForm)

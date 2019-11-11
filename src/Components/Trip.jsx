@@ -14,7 +14,7 @@ class Trip extends Component {
             <Image id="trip-modal-image" src={this.props.trip.image}></Image>
             <h5>{this.props.trip.location}</h5>
             <p>{this.props.trip.description}</p>
-            <ul>{this.props.trip.trail_names.map(trail_name => <li>{trail_name}</li>)}</ul>
+            <ul>{this.props.trip.trail_names.map((trail_name, index) => <li key={index}>{trail_name}</li>)}</ul>
             <p> {this.props.trip.stars} <FaStar/> </p>
             <Button onClick={()=> this.setState({ showModal: false }) } variant="secondary">Close</Button>
         </Modal>
@@ -39,8 +39,5 @@ class Trip extends Component {
     }
 }
 
-let mapStateToProps = state => ({ user: state.userReducer.user })
+const mapStateToProps = state => ({ user: state.session.user })
 export default connect(mapStateToProps)(Trip)
-
-
-

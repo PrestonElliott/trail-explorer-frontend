@@ -1,11 +1,12 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import UsersCards from "./UsersCards"
+import { backend_api } from '../constants'
 
-class AllUsers extends Component {
+class AllUsers extends React.Component {
 
     componentDidMount = () => {
-        fetch("https://trail-explorer-backend.herokuapp.com/users", {
+        fetch(`${backend_api}/users`, {
             method: "GET",
             headers: { Accept: 'application/json', 'Content-Type':'application/json' },
         })

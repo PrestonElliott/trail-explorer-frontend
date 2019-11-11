@@ -1,15 +1,15 @@
 import React, { Component } from "react"
+import { Link } from "react-router-dom"
 import { connect } from 'react-redux'
-import { Form, FormInput, FormGroup } from "shards-react"
 import { Modal, Button } from "react-bootstrap"
-import SignUpDiv from "./SignUpDiv"
+import { backend_api } from '../constants'
 
 class SignUp extends Component {
 
     handleSignUp = (e) => {
         e.preventDefault()
         if(e.target.name.value && e.target.email.value && e.target.password.value) {
-            fetch('https://trail-explorer-backend.herokuapp.com/users',{
+            fetch(`${backend_api}/users`, {
                 method: 'POST',
                 headers: { Accept: 'application/json', 'Content-Type':'application/json' },
                 body: JSON.stringify({
@@ -23,8 +23,7 @@ class SignUp extends Component {
             .then(res => res.json())
             .then(res => {
                 if(res.jwt) {
-                    localStorage.setItem('token', res.jwt)
-                    this.props.dispatch({ type: 'GET_USER', user: res.user })
+                    this.props.dispatch({ type: 'LOG_IN', user: res.user, jwt: res.jwt  })
                 }
             })
         }
@@ -33,7 +32,7 @@ class SignUp extends Component {
 
     render() {
         return (
-            <SignUpDiv>
+            <div id='SignUp'>
                 <Modal.Dialog>
                     <Modal.Header>
                         <h3>Sign Up Form</h3>
@@ -41,29 +40,27 @@ class SignUp extends Component {
 
                     <Modal.Body>
 
-                        <Form onSubmit={(e) => this.handleSignUp(e)}>
-                        
-                            <FormGroup>
-                                <label htmlFor="#name">Name</label>
-                                <FormInput type="name" name="name" id="#name" placeholder="Name" />
-                            </FormGroup>
+                        <form onSubmit={(e) => this.handleSignUp(e)}>
+                            <label htmlFor="#name">Name</label>
+                            <input type="name" name="name" id="#name" placeholder="Name" />
 
-                            <FormGroup>
-                                <label htmlFor="#email">Email</label>
-                                <FormInput type="email" name="email" id="#email" placeholder="Email" />
-                            </FormGroup>
-                            
-                            <FormGroup>
-                                <label htmlFor="#password">Password</label>
-                                <FormInput name="password" type="password" id="#password" placeholder="Password" /><br/>
-                                <Button type="submit"> Submit </Button><br/>
-                            </FormGroup>
-                        </Form>
+                            <label htmlFor="#email">Email</label>
+                            <input type="email" name="email" id="#email" placeholder="Email" />
+                        
+                            <label htmlFor="#password">Password</label>
+                            <input name="password" type="password" id="#password" placeholder="Password" /><br/>
+
+                            <Button type="submit"> Submit </Button><br/>
+                        </form>
+                        
+                        <Link to="/login">
+                            <Button> Already have an account? </Button>
+                        </Link>
                         
                     </Modal.Body>
 
                 </Modal.Dialog>
-            </SignUpDiv>
+            </div>
         )
     }
 }

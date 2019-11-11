@@ -1,48 +1,29 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Card, ListGroup, Image } from "react-bootstrap"
+import ReactLoading from 'react-loading'
+import Iframe from 'react-iframe'
+import diff from '../images/difficulty/difficulty-export'
 
 class Trails extends Component {
 
-    fetchTrails = (lat, lon) => {
-        const maxResults = 40
-        const decimalReplaceLat = lat.replace('.', '!')
-        const decimalReplaceLon = lon.replace('.', '!')
-        fetch(`https://trail-explorer-backend.herokuapp.com/trails&lat=${decimalReplaceLat}&lon=${decimalReplaceLon}&maxResults=${maxResults}`)
-        .then(res => res.json())
-        .then(res => this.props.dispatch({ type: "FETCH_TRAILS", data: res }))
+    state = { 
+        redirect: null
     }
 
-    componentDidMount() {
-        this.fetchTrails("33.7490", "-84.3880")
-    }
-
-    difficultyImg = (t) => {
-        switch(t.difficulty) {
-            case "green":
-                return "https://cdn.apstatic.com/img/diff/green.svg"
-
-            case "greenBlue":
-                return "https://cdn.apstatic.com/img/diff/greenBlue.svg"
-
-            case "blue":
-                return "https://cdn.apstatic.com/img/diff/blue.svg"
-
-            case "blueBlack":
-                return "https://cdn.apstatic.com/img/diff/blueBlack.svg"
-
-            case "black":
-                return "https://cdn.apstatic.com/img/diff/black.svg"
-
-            default: 
-                return ""
+    loading = () => {
+        if(!this.props.allTrails.length) {
+            return (
+                <div className="loading">
+                    <ReactLoading className='react-loading' type="cylon" color="#026F3D" width="30%" />
+                </div>
+            )
         }
     }
 
     renderTrails = () => {
-        console.log("TRAILS", this.props.trailReducer)
-        if(this.props){
-          const trailCards = this.props.trailReducer.map(t => {
+        if(this.props.allTrails.length) {
+          const trailCards = this.props.allTrails.map(t => {
             return(
                 <Card id="trail-card" key={t.id}>
                     <Card.Img 
@@ -64,11 +45,18 @@ class Trails extends Component {
                         <ListGroup variant="flush">
                             <ListGroup.Item>Stars: {t.stars}</ListGroup.Item>
                             <ListGroup.Item>Length: {t.length} miles</ListGroup.Item>
-                            {/* <ListGroup.Item>Ascent: {t.ascent} ft Descent: {t.descent} ft</ListGroup.Item> */}
                             <ListGroup.Item>High: {t.high} ft, Low: {t.low} ft</ListGroup.Item>
-                            <ListGroup.Item id="trail-difficulty">Difficulty: <Image style={{'borderRadius':'4px' }}src={this.difficultyImg(t)}/></ListGroup.Item>
+
+                            <ListGroup.Item id="trail-difficulty">
+                                Difficulty: <Image src={diff[t.difficulty].src} alt={diff[t.difficulty].alt}/>
+                            </ListGroup.Item>
+
+                            <ListGroup.Item>
+                                <a href={t.url} rel="noopener noreferrer" target="_blank">Details</a>
+                            </ListGroup.Item>
+
+                            {/* <ListGroup.Item>Ascent: {t.ascent} ft Descent: {t.descent} ft</ListGroup.Item> */}
                             {/* <ListGroup.Item id="trail-conditions">Conditions: {t.conditionStatus}, {t.conditionDetails}</ListGroup.Item> */}
-                            <ListGroup.Item> <a href={t.url} rel="noopener noreferrer" target="_blank">Trail Details </a></ListGroup.Item>
                         </ListGroup>
                   </Card.Body>
               </Card>
@@ -85,11 +73,21 @@ class Trails extends Component {
     render() {
         return (
             <div>
-                {this.renderTrails()}
+                <br/><h2> Find a trail near you! </h2><br/>
+                <Iframe title="trails-map" className="trails-map" frameborder="0" scrolling="yes"
+                    src={`https://www.hikingproject.com/widget/map?v=3&favs=1&searchBar=0&location=fixed&x=-11720100&y=4865450&z=11&h=450`}>
+                </Iframe>
+                { this.loading() }
+                { this.renderTrails() }
             </div>
         )
     }
 }
 
-let mapStateToProps = state => ({ trailReducer: state.trailReducer.trail })
+const mapStateToProps = state => ({
+    allTrails: state.location.allTrails,
+    lat: state.location.lat.replace('!',''),
+    lon: state.location.lon.replace('!',''),
+    geoError: state.location.geoError
+})
 export default connect(mapStateToProps)(Trails)

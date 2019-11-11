@@ -1,0 +1,144 @@
+@import './media-breakpoints';
+
+$nav-height: 60px;
+$mobile-height: 40px;
+
+$bg-color: rgb(240, 240, 240);
+$menu-border: 1px solid grey;
+
+$accent: #6AA0CD;
+$duration: 0.30s;
+
+
+.routes-container {
+  padding-top: $nav-height;
+  min-height: 100vh;
+
+  @include mbp-range(xs, lg) { padding-top: $mobile-height; }
+}
+  
+.navbar {
+	position: fixed;
+  z-index: 10;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+	width: 100vw;
+  height: $nav-height;
+  padding: 0 1rem;
+
+  background-color: $bg-color;
+  border-bottom: $menu-border;
+
+	font-family: Raleway, sans-serif;
+	font-size: 1.5rem;
+}
+
+.brand {
+  height: 100%;
+}
+
+.text-logo {
+  height: 90%;
+}
+
+.image-logo {
+  height: 90%;
+}
+
+.menu {
+	display: flex;
+	justify-content: space-around;
+}
+
+.mobile-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  position: fixed;
+  z-index: 10;
+  top: $mobile-height;
+  right: 0;
+
+  background-color: $bg-color;
+  border: $menu-border;
+
+  transform: translate(100%, 0);
+  transition: transform $duration linear 0s;
+  .responsive + & {
+    transform: translate(0, 0);
+  }
+}
+
+.nav-link {
+  font-family: Helvetica;
+  font-weight: 100;
+  color: black;
+	position: relative;
+	cursor: pointer;
+	padding-bottom: 3px;
+
+  &:hover {
+    color: rgb(0,80,180);
+  }
+}
+
+.external-link {
+  position: relative;
+  top: .5px;
+  font-size: 1rem;
+}
+
+.icon {
+  display: none;
+  width: 20%;
+  height: 20%;
+  align-items: center;
+
+  padding: 4px;
+
+  border-radius: 4px;
+  transition: background-color $duration linear 0s;
+}
+
+@include mbp-range(xs, lg) {
+
+  .navbar {
+    height: $mobile-height;
+  }
+
+  .image-logo {
+    display: none;
+  }
+
+  .text-logo {
+    display: inline-block;
+    height: $mobile-height;
+  }
+
+  .menu {
+  	display: none;
+  }
+
+  .nav-link {
+    display: block;
+    padding: 10px 50px;
+
+    text-align: center;
+		font-size: 1.2rem;
+		border-top: $menu-border;
+  }
+  .bottom { display: none; }
+
+  .icon { display: flex; }
+  .top-link { border-top: none; }
+  .external-link { display: none; }
+
+  .responsive .icon {
+    background-color: grey;
+    color: white;
+  }
+}

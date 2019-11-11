@@ -6,31 +6,44 @@ import {Row, Col} from 'react-bootstrap'
 
 class FollowerFeed extends Component {
 
+    state = {}
+
+    mapFriendTrips = () => {
+        const { followed_users } =this.props.user
+        return Object.keys(followed_users).map(key => 
+            followed_users[key].trips.map(trip => 
+                <Col md={3} key={trip.id}><Trip trip={trip} /></Col>
+            )
+        )
+    }
+
+    mapFriendFutureTrips = () => {
+        const { followed_users } =this.props.user
+        return Object.keys(followed_users).map(key => 
+            followed_users[key].future_trips.map(trip => 
+                <Col md={3} key={trip.id}><FutureTrip key={trip.id} futureTrip={trip} /></Col>
+            )
+        )
+    }
+
     render() {
-        console.log(this.props.user.followed_users)
         return (
             <Fragment>
-                <br/><h2>Your Followers Recent Trips!</h2><br/>
+                <br/><h2>Followed Users' Recent Trips</h2><br/>
                 <div className='tripcard-div'>
                     <Row id="follower-row">
-                        {this.props.user.followed_users.map(friend => 
-                            friend.trips.map(trip => 
-                                <Col md={3}><Trip key={trip.id} trip={trip} /> </Col>))
-                        }
+                        { this.mapFriendTrips() }
                     </Row>
                 </div>
-                <br/><h2>Your Followers Future Trips!</h2><br/>
+                <br/><h2>Followed Users' Future Trips</h2><br/>
                 <div className='futuretripcard-div'>
                     <Row>
-                        {this.props.user.followed_users.map(friend => 
-                            friend.future_trips.map(futureTrip => 
-                                <Col md={3}><FutureTrip key={futureTrip.id} futureTrip={futureTrip}/> </Col>))
-                        }
+                        { this.mapFriendFutureTrips() }
                     </Row>
                 </div><br/>
             </Fragment>
         )
     }
 }
-let mapStateToProps = state => ({ user: state.userReducer.user })
+const mapStateToProps = state => ({ user: state.session.user })
 export default connect(mapStateToProps)(FollowerFeed)

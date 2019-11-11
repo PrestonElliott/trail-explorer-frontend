@@ -1,20 +1,25 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import { Card } from "react-bootstrap"
 
 class FutureTrip extends Component {
 
+    mapTrailNames = () => this.props.futureTrip.trail_names.map((name, index) => <li key={index}>{name}</li>)
+
     render() {
+        const trip = this.props.futureTrip
         return (
             <div>
-                <Card id="future-trip-card" className="m-3">
+                <Card id="future-trip-card" className="m-3">  
+                    <Card.Title>{trip.title}</Card.Title>
+                    <br/>
+                    <Card.Subtitle className="mb-2 text-muted">Location: {trip.location}</Card.Subtitle>
+                    <br/>
                     <Card.Body>
-                        <Card.Title>{this.props.futureTrip.title}</Card.Title><br/>
-                        <Card.Subtitle className="mb-2 text-muted">Location: {this.props.futureTrip.location}<br/></Card.Subtitle>
-                        <Card.Text>
-                            Notes: {this.props.futureTrip.note}<br/><br/>
-                            <ul id="trail-list">{this.props.futureTrip.trail_names.map(trail_name => <li>{trail_name}</li>)}</ul>
-                        </Card.Text>
+                        Notes: {trip.note}
+                        <br/><br/>
+                        <ul id="trail-list">
+                            { this.mapTrailNames() }
+                        </ul>
                     </Card.Body>
                 </Card>
             </div>
@@ -22,5 +27,4 @@ class FutureTrip extends Component {
     }
 }
 
-let mapStateToProps = state => ({ user: state.userReducer.user })
-export default connect(mapStateToProps)(FutureTrip)
+export default FutureTrip

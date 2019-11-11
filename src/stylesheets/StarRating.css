@@ -1,0 +1,38 @@
+@import url('//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css');
+
+
+div.star {
+  display: inline-block;
+  margin: 0;
+  padding-top: 0;
+}
+
+.star > input { display: none; } 
+.star > label:before { 
+  margin: 0 2.5px;
+  font-size: 1.25rem;
+  font-family: FontAwesome;
+  display: inline-block;
+  content: "\f005";
+}
+
+.star > .half:before { 
+  content: "\f089";
+  position: absolute;
+}
+
+.star > label { 
+  color: #ddd; 
+ float: right; 
+}
+
+/***** CSS Magic to Highlight Stars on Hover *****/
+
+.star > input:checked ~ label, /* show gold star when clicked */
+.star:not(:checked) > label:hover, /* hover current star */
+.star:not(:checked) > label:hover ~ label { color: #FFD700;  } /* hover previous stars in list */
+
+.star > input:checked + label:hover, /* hover current star when changing star */
+.star > input:checked ~ label:hover,
+.star > label:hover ~ input:checked ~ label, /* lighten current selection */
+.star > input:checked ~ label:hover ~ label { color: #FFED85;  } 

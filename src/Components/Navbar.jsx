@@ -1,132 +1,90 @@
-import React, { Fragment } from "react";
+import React, { Fragment } from 'react'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-
-import {
-  Navbar,
-  NavbarToggler,
-  NavbarBrand,
-  Nav,
-  NavItem,
-  NavLink,
-  Dropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText,
-  Collapse
-} from "shards-react";
-
-class NavExample extends React.Component {
-
-  imageText = require("../Images/trail-explorer-logo-text.png")
-  imageLogo = require("../Images/trail-explorer-logo-main.png")
+import { FiMenu as MenuIcon } from 'react-icons/fi'
+import { closeNavbar, toggleNavbar } from '../actions/navbar'
+import brand_text from '../images/trail-explorer-logo-text.png'
+import brand_logo from '../images/trail-explorer-logo-main.png'
+import '../stylesheets/Navbar.scss'
 
 
-  constructor(props) {
-    super(props)
+class Navibar extends React.Component {
 
-    this.toggleDropdown = this.toggleDropdown.bind(this)
-    this.toggleNavbar = this.toggleNavbar.bind(this)
+	getClassName = base => ( this.props.navbarOpen ? base+' responsive' : base )
 
-    this.state = {
-      dropdownOpen: false,
-      collapseOpen: false
-    };
-  }
+	toggleNavbar = () => toggleNavbar(this.props.dispatch)
+	closeNavbar = () => closeNavbar(this.props.dispatch)
 
-  toggleDropdown() {
-    this.setState({
-      ...this.state,
-      ...{
-        dropdownOpen: !this.state.dropdownOpen
-      }
-    })
-  }
+	getNavLinks = () => {
+		if(this.props.loggedIn) {
+			return (
+				<Fragment>
+					<Link to='/trails' className='nav-link top-link'>
+						Trails
+					</Link>
 
-  toggleNavbar() {
-    this.setState({
-      ...this.state,
-      ...{
-        collapseOpen: !this.state.collapseOpen
-      }
-    })
-  }
+					<Link to='/follower-feed' className='nav-link'>
+						Follower Feed
+					</Link>
 
-  render() {
-    return (
-      
-      <Navbar type="light" theme="light" expand="md">
-        <img src={this.imageText} className="text-logo" alt="logo"/>
-        <NavbarBrand><img src={this.imageLogo} className="image-logo" alt="trail-logo"/></NavbarBrand>
-        <NavbarToggler onClick={this.toggleNavbar} />
+					<Link to='/community' className='nav-link'>
+						Community
+					</Link>
 
-        <Collapse open={this.state.collapseOpen} navbar>
-          <Nav navbar>
+					<Link to='/profile' className='nav-link'>
+						Profile
+					</Link>
 
-              <NavItem>
-                <NavLink active href="/trails">
-                  Trails
-                </NavLink>
-              </NavItem>
+					<div className='nav-link' onClick={()=> this.props.dispatch({ type: 'LOG_OUT' })}>
+						Logout
+					</div>
+				</Fragment>
+			)
+		}
+		else {
+			return (
+				<Fragment>
+					<Link to='/trails' className='nav-link top-link'>
+						Trails
+					</Link>
 
-              { this.props.loggedIn &&
-                <Fragment>
+					<Link to='/login' className='nav-link'>
+						Log In
+					</Link>
+				</Fragment>
+			)
+		}
+	}
 
-                  <Dropdown open={this.state.dropdownOpen} toggle={this.toggleDropdown}>
-                    <DropdownToggle nav caret>
-                      Profile
-                    </DropdownToggle>
-                      <DropdownMenu>                        
-                        <DropdownItem href="/profile">My Profile</DropdownItem>
-                        <DropdownItem  href="/edit-profile" >Edit</DropdownItem>
-                      </DropdownMenu>
-                  </Dropdown>
 
-                  <NavItem>
-                    <NavLink active href="/follower-feed">
-                      Follower Feed
-                    </NavLink>
-                  </NavItem>
+	render() {
+		return (
+			<Fragment>
+				<div className={this.getClassName('navbar')}>
+					<Link to='/' className='brand' onClick={this.closeNavbar}>
+						<img src={brand_text} className="text-logo" alt="trail-explorer"/>
+						<img src={brand_logo} className="image-logo" alt="te-logo"/>
+					</Link>
 
-                  <NavItem>
-                    <NavLink active href="/all-users">
-                      All Users
-                    </NavLink>
-                  </NavItem>
+					<div className='menu'>
+						{ this.getNavLinks() }
+					</div>
 
-                  <NavItem>
-                    <NavLink active onClick={()=> this.props.dispatch({ type: 'LOG_OUT' }) }>
-                      Log Out
-                    </NavLink>
-                  </NavItem> 
+					<span className='icon' onClick={this.toggleNavbar}>
+						<MenuIcon/>
+					</span>
+				</div>
 
-                </Fragment>
-              }
-
-              { !this.props.loggedIn &&
-                  <NavItem>
-                    <NavLink active href='/login'>
-                      Login
-                    </NavLink>
-                  </NavItem>
-              }
-          </Nav>
-
-          <Nav navbar className="ml-auto">
-            <InputGroup size="sm" seamless>
-              <InputGroupAddon type="prepend">
-                <InputGroupText>
-                </InputGroupText>
-              </InputGroupAddon>
-            </InputGroup>
-          </Nav>
-        </Collapse>
-      </Navbar>
-    )
-  }
+				<div className='mobile-menu' onClick={this.closeNavbar}>
+					{ this.getNavLinks() }
+				</div>
+			</Fragment>
+		)
+	}
 }
 
-let mapStateToProps = state => ({ loggedIn: state.userReducer.loggedIn })
-export default connect(mapStateToProps)(NavExample)
+const mapStateToProps = state => ({
+	loggedIn: state.session.loggedIn,
+	navbarOpen: state.navbar.navbarOpen
+});
+export default connect(mapStateToProps)(Navibar);

@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import { Link } from "react-router-dom"
 import { connect } from 'react-redux'
-import { Modal, Button } from "react-bootstrap"
+import { Modal, Button, Form } from "react-bootstrap"
 import { backend_api } from '../constants'
 
 class SignUp extends Component {
@@ -40,21 +40,24 @@ class SignUp extends Component {
 
                     <Modal.Body>
 
-                        <form onSubmit={(e) => this.handleSignUp(e)}>
-                            <label htmlFor="#name">Name</label>
-                            <input type="name" name="name" id="#name" placeholder="Name" />
+                        <Form onSubmit={(e) => this.handleSignUp(e)}>
+                            <Form.Group>
+                                <Form.Control required name='name' id='#name' placeholder='Name' />
+                            </Form.Group>
 
-                            <label htmlFor="#email">Email</label>
-                            <input type="email" name="email" id="#email" placeholder="Email" />
-                        
-                            <label htmlFor="#password">Password</label>
-                            <input name="password" type="password" id="#password" placeholder="Password" /><br/>
+                            <Form.Group>
+                                <Form.Control required name='email' id='#email' placeholder='Email' />
+                            </Form.Group>
 
-                            <Button type="submit"> Submit </Button><br/>
-                        </form>
+                            <Form.Group>
+                                <Form.Control required name='password' id='#password' placeholder='Password' />
+                            </Form.Group>
+                            
+                            <Button type="submit"> Submit </Button><br/><br/>
+                        </Form>
                         
                         <Link to="/login">
-                            <Button> Already have an account? </Button>
+                            <Button className="back-to-login"> Already have an account? </Button>
                         </Link>
                         
                     </Modal.Body>

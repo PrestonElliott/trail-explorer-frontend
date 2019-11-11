@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom"
 import { connect } from 'react-redux'
-import { Modal, Button } from "react-bootstrap"
+import { Modal, Button, Form } from "react-bootstrap"
 import { backend_api } from '../constants'
 
 class Login extends React.Component {
@@ -32,19 +32,23 @@ class Login extends React.Component {
         return (
             <div id='Login'>
                 <Modal.Dialog>
+                    <Modal.Header>
+                        <h3>Login Form</h3>
+                    </Modal.Header>
 
                     <Modal.Body>
-                        <form onSubmit={(e) => this.handleLogin(e)}>
-                            <h3>Login Form</h3>
+                        <Form onSubmit={(e) => this.handleLogin(e)}>
 
-                            <label htmlFor="#email">Email</label>
-                            <input type="email" name="email" id="#email" placeholder="Email" />
+                            <Form.Group>
+                                <Form.Control required name='email' id='#email' placeholder='Email' />
+                            </Form.Group>
 
-                            <label htmlFor="#password">Password</label>
-                            <input name="password" type="password" id="#password" placeholder="Password" />
+                            <Form.Group>
+                                <Form.Control required name='password' id='#password' placeholder='Password' />
+                            </Form.Group>   
 
-                        <Button type="submit">Login</Button><br/><br/>
-                        </form>
+                            <Button type="submit">Login</Button><br/><br/>
+                        </Form>
                         
                         <Link to="/signup">
                             <Button> Create Your Account Today! </Button>

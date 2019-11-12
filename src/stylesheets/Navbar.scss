@@ -75,14 +75,15 @@ $duration: 0.30s;
 
 .nav-link {
   font-family: Helvetica;
-  font-weight: 100;
+  // font-weight: 100;
+  font-weight: bold;
   color: black;
 	position: relative;
 	cursor: pointer;
 	padding-bottom: 3px;
 
   &:hover {
-    color: rgb(0,80,180);
+    color: rgb(4, 94, 44);
   }
 }
 

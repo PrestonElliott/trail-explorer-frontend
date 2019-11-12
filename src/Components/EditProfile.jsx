@@ -4,6 +4,7 @@ import { Link, Redirect } from 'react-router-dom'
 import { Modal, Button, Form } from 'react-bootstrap'
 import { backend_api } from '../constants'
 import '../stylesheets/forms.scss'
+import EditDiv from './EditDiv'
 
 class EditProfile extends Component {
 
@@ -43,9 +44,9 @@ class EditProfile extends Component {
 
     render() {
         return (
-            
-            <div id='edit-profile'>
-            {this.state.redirect}
+            <EditDiv>
+                <div id='edit-profile'>
+                {this.state.redirect}
                     <Modal.Dialog>
                         <Modal.Header>
                             <Modal.Title>Edit Profile</Modal.Title>
@@ -76,7 +77,8 @@ class EditProfile extends Component {
                             </Form>
                         </Modal.Body>
                     </Modal.Dialog>
-            </div>
+                </div>
+            </EditDiv>
         )
     }
 }

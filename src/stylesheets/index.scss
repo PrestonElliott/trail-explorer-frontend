@@ -172,6 +172,17 @@ div.carousel.slide {
   overflow-y: scroll;
 }
 
+#trip-show-card {
+  border: none;
+  padding-top: 5%;
+}
+
+.trip-modal-trails {
+  margin: auto;
+  text-align: center;
+  list-style-position: inside;
+}
+
 /* FOLLOWER FEED */
 #follower-row {
   padding: 10px 20px;

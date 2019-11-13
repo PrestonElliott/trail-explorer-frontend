@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { Link, Redirect } from 'react-router-dom'
 import { Modal, Button, Form } from 'react-bootstrap'
 import { backend_api } from '../constants'
-import '../stylesheets/forms.scss'
 import EditDiv from './EditDiv'
 
 class EditProfile extends Component {
